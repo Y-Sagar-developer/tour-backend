@@ -4,11 +4,11 @@ import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import tourRoute from "./routes/tours.js";
-import userRoute from "./routes/users.js";
-import authRoute from "./routes/auth.js";
-import reviewRoute from "./routes/reviews.js";
-import bookingRoute from "./routes/bookings.js";
+import tourRoute from "./src/routes/tourRoutes.js";
+import userRoute from "./src/routes/users.js";
+import authRoute from "./src/routes/auth.js";
+import reviewRoute from "./src/routes/reviews.js";
+import bookingRoute from "./src/routes/bookings.js";
 
 dotenv.config();
 const app = express();
