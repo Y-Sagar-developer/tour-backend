@@ -1,15 +1,17 @@
 services:
   - type: web
-    name: tour-management-backend
+    name: tour-backend
     env: node
     buildCommand: npm install
-    startCommand: npm start
+    startCommand: node index.js
     envVars:
+      - key: PORT
+        value: 8000
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 4000
-      - key: MONGODB_URI
+      - key: MONGO_URI
         sync: false
-      - key: JWT_SECRET_KEY
-        sync: false 
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 7d 
