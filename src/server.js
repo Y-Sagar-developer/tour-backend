@@ -23,14 +23,18 @@ const app = express();
 // CORS configuration
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://tour-management-frontend-iota.vercel.app', 'https://tour-management-frontend-amber.vercel.app']
-    : true, // Allow all origins in development
+    ? ['https://tour-frontend-snowy.vercel.app', 'https://tour-management-frontend-iota.vercel.app', 'https://tour-management-frontend-amber.vercel.app']
+    : ['http://localhost:5173', 'http://localhost:3000'], // Allow specific origins in development
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  maxAge: 86400
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'X-CSRF-Token'],
+  exposedHeaders: ['Set-Cookie'],
+  maxAge: 86400,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 };
 
+// Apply CORS middleware
 app.use(cors(corsOptions));
 
 // Handle preflight requests
