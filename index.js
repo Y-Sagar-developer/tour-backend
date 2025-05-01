@@ -14,14 +14,17 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 
-// ✅ Corrected CORS options
+// Set environment variables
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
+// CORS configuration
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? 'https://tour-management-frontend-iota.vercel.app'
-    : 'http://localhost:5173',
+    ? ['https://tour-frontend-snowy.vercel.app']
+    : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'X-CSRF-Token'],
   exposedHeaders: ['Set-Cookie'],
   maxAge: 86400,
   preflightContinue: false,
@@ -36,7 +39,7 @@ mongoose.set("strictQuery", false);
 // Connect to MongoDB before starting the server
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log("✅ MongoDB database connected");
   } catch (err) {
     console.error("❌ MongoDB connection failed:", err.message);
@@ -44,13 +47,17 @@ const connectDB = async () => {
   }
 };
 
-// Connect to MongoDB
-connectDB();
-
-// ✅ Middleware
-app.use(cors(corsOptions));  // CORS must be first
+// Middleware
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
+
+// Routes
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/tours", tourRoute);
+app.use("/api/v1/users", userRoute);
+app.use("/api/v1/reviews", reviewRoute);
+app.use("/api/v1/bookings", bookingRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -62,12 +69,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ✅ Routes
-app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/tours", tourRoute);
-app.use("/api/v1/users", userRoute);
-app.use("/api/v1/review", reviewRoute);
-app.use("/api/v1/booking", bookingRoute);
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+    path: req.path,
+    method: req.method
+  });
+});
 
 // Export the Express API
 module.exports = app;
