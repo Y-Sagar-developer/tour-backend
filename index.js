@@ -37,7 +37,7 @@ mongoose.set("strictQuery", false);
 // Connect to MongoDB before starting the server
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log("✅ MongoDB database connected");
   } catch (err) {
     console.error("❌ MongoDB connection failed:", err.message);
